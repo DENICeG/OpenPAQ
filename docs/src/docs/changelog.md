@@ -16,6 +16,10 @@ With any major version update, breaking changes may occur that can affect the be
 
 ---
 
+## [5.0.10] - 2025-08-12
+### Changed
+- Dependencies update
+
 ## [5.0.9] - 2025-07-11
 ### Changed
 - Changed logo
