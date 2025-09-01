@@ -14,11 +14,22 @@ Important:
 With any major version update, breaking changes may occur that can affect the behavior, structure, or integration of OpenPAQ in your environment. It is strongly recommended to review the changelog and migration guide before upgrading to a new major version to ensure compatibility with your existing implementation.
 <br><br>
 
+
+
+---
+
+## [5.0.12] - 2025-09-01
+### Fixed
+- Build Container Release for GitHub
+- User Agent for Nominatim Request
+
 ---
 
 ## [5.0.10] - 2025-08-12
 ### Changed
 - Dependencies update
+
+---
 
 ## [5.0.9] - 2025-07-11
 ### Changed
@@ -26,7 +37,7 @@ With any major version update, breaking changes may occur that can affect the be
 
 ---
 
-- ## [5.0.8] - 2025-06-25
+## [5.0.8] - 2025-06-25
 ### Added
 - Added changelog and reference for semantic versioning
 

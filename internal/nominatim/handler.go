@@ -17,7 +17,7 @@ type Nominatim struct {
 	normalizer *normalization.Normalizer
 }
 
-func NewNominatim(url string, languages []string, config algorithms.MatchSeverityConfig, normalizer *normalization.Normalizer, nominatimApi api) *Nominatim {
+func NewNominatim(url string, languages []string, config algorithms.MatchSeverityConfig, normalizer *normalization.Normalizer, nominatimApi api, userAgent string) *Nominatim {
 
 	nominatim := Nominatim{
 		url,
@@ -27,6 +27,7 @@ func NewNominatim(url string, languages []string, config algorithms.MatchSeverit
 			client: http.Client{
 				Timeout: 180 * time.Second,
 			},
+			userAgent: userAgent,
 		},
 		normalizer,
 	}
