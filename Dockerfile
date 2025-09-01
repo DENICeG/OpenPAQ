@@ -1,4 +1,4 @@
-FROM golang:1.24.6-alpine3.21 as builder
+FROM golang:1.25.0-alpine3.21 as builder
 
 RUN apk update && apk add --no-cache git ca-certificates
 
@@ -15,7 +15,7 @@ FROM scratch
 WORKDIR /data
 COPY --from=builder /data/bin/cva /data
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /data/docs/docs/openAPI /data/docs/docs/openAPI
+COPY --from=builder /data/docs/openAPI /data/docs/docs/openAPI
 ENV TZ="Europe/Berlin"
 CMD [ "/data/cva" ]
 

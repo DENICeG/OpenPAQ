@@ -1,8 +1,7 @@
 package internal
 
 import (
-	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"net/http"
 	"openPAQ/internal/algorithms"
 	"openPAQ/internal/listmatcher"
@@ -11,6 +10,9 @@ import (
 	"openPAQ/internal/normalization"
 	"openPAQ/internal/types"
 	"time"
+
+	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/gin-gonic/gin"
 )
 
 type ServiceConfig struct {
@@ -54,7 +56,7 @@ func NewService(config *ServiceConfig, matcherConfig algorithms.MatchSeverityCon
 		webserver:   nil,
 		config:      config,
 		listMatcher: d,
-		nominatim:   nominatim.NewNominatim(nominatimConfig.Url, nominatimConfig.Languages, matcherConfig, norma, nil),
+		nominatim:   nominatim.NewNominatim(nominatimConfig.Url, nominatimConfig.Languages, matcherConfig, norma, nil, fmt.Sprint("openPAQ", "-", config.Version)),
 		normalizer:  norma,
 		mc:          mc,
 	}

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/hbollon/go-edlib"
 	"net/http"
 	"openPAQ/internal/algorithms"
 	"openPAQ/internal/nominatim"
@@ -12,6 +11,8 @@ import (
 	"openPAQ/internal/types"
 	"slices"
 	"testing"
+
+	"github.com/hbollon/go-edlib"
 )
 
 type ApiMock struct {
@@ -151,6 +152,7 @@ func TestCityStreetCheck(t *testing.T) {
 					searchStringResponse: singleResult,
 					parameterResponse:    singleResult,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -184,6 +186,7 @@ func TestCityStreetCheck(t *testing.T) {
 					searchStringResponse: singleResult,
 					parameterResponse:    multiResultAlmostSimilarCity,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -226,6 +229,7 @@ func TestCityStreetCheck(t *testing.T) {
 					searchStringRaisesError: true,
 					parameterResponse:       singleResult,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -259,6 +263,7 @@ func TestCityStreetCheck(t *testing.T) {
 					parameterResponseRaisesError: true,
 					searchStringResponse:         singleResult,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -293,6 +298,7 @@ func TestCityStreetCheck(t *testing.T) {
 					parameterResponseRaisesError: true,
 					searchStringRaisesError:      true,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -312,6 +318,7 @@ func TestCityStreetCheck(t *testing.T) {
 					searchStringResponse: singleResult,
 					parameterResponse:    singleResult,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttw"},
@@ -345,6 +352,7 @@ func TestCityStreetCheck(t *testing.T) {
 					searchStringResponse: singleResult,
 					parameterResponse:    singleResult,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone"},
@@ -399,6 +407,7 @@ func TestPostalCodeStreetCheck(t *testing.T) {
 				[]string{"en", "de"},
 				config, normalization.NewNormalizer("generic"),
 				ApiMock{},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -442,6 +451,7 @@ func TestPostalCodeStreetCheck(t *testing.T) {
 					searchStringResponse: singleResult,
 					parameterResponse:    singleResult,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -474,6 +484,7 @@ func TestPostalCodeStreetCheck(t *testing.T) {
 					searchStringResponse: singleResult,
 					parameterResponse:    multiResultAlmostSimilarStreet,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone"},
@@ -535,6 +546,7 @@ func TestPostalCodeCityCheck(t *testing.T) {
 				[]string{"en", "de"},
 				config, normalization.NewNormalizer("generic"),
 				ApiMock{},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},
@@ -577,6 +589,7 @@ func TestPostalCodeCityCheck(t *testing.T) {
 					searchStringResponse: singleResult,
 					parameterResponse:    singleResult,
 				},
+				"test",
 			),
 			input: types.NormalizeInput{
 				Streets:     []string{"streetone parttwo"},

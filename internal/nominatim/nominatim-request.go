@@ -14,10 +14,12 @@ type api interface {
 }
 
 type apiNominatim struct {
-	client http.Client
+	client    http.Client
+	userAgent string
 }
 
 func (napi apiNominatim) ExecuteNominatimRequest(r *http.Request) ([]NominatimCoreResult, error) {
+	r.Header.Add("User-Agent", napi.userAgent)
 	res, err := napi.client.Do(r)
 	if err != nil {
 		return nil, err
