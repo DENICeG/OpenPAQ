@@ -14,7 +14,11 @@ Important:
 With any major version update, breaking changes may occur that can affect the behavior, structure, or integration of OpenPAQ in your environment. It is strongly recommended to review the changelog and migration guide before upgrading to a new major version to ensure compatibility with your existing implementation.
 <br><br>
 
+---
 
+## [5.0.13] - 2025-09-17
+### Fixed
+- Significant reduction in queries to Nominatim
 
 ---
 

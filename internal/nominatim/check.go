@@ -2,9 +2,9 @@ package nominatim
 
 import (
 	"context"
+	"maps"
 	"openPAQ/internal/algorithms"
 	"openPAQ/internal/types"
-	"slices"
 	"strings"
 	"sync"
 )
@@ -22,9 +22,20 @@ func getInputLanguages(nominatimLanguages []string, inputCC string) []string {
 		nominatimLanguages = append(nominatimLanguages, additionalCountryCodes...)
 	}
 
-	nominatimLanguages = slices.Compact(nominatimLanguages)
+	var lang = make(map[string]bool)
 
-	return nominatimLanguages
+	for _, v := range nominatimLanguages {
+		lang[v] = true
+	}
+
+	res := []string{}
+	for v := range maps.Keys(lang) {
+		res = append(res, v)
+	}
+
+	//nominatimLanguages = res
+
+	return res
 }
 
 type nominatimRequestParameter struct {
