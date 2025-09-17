@@ -36,6 +36,7 @@ type NominatimCoreResult struct {
 	Commercial       string `json:"commercial"`
 	Retail           string `json:"retail"`
 	Road             string `json:"road"`
+	Park             string `json:"park"`
 	Building         string `json:"building"`
 	CityBlock        string `json:"city_block"`
 	PostCode         string `json:"postcode"`
@@ -122,6 +123,10 @@ func (nr *NominatimCoreResult) parse() ParsedResult {
 	if len(nr.Road) > 0 {
 		p.Street = append(p.Street, nr.Road)
 	}
+	if len(nr.Park) > 0 {
+		p.Street = append(p.Street, nr.Park)
+	}
+
 	if len(nr.CityBlock) > 0 {
 		p.Street = append(p.Street, nr.CityBlock)
 	}
