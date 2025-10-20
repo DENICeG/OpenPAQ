@@ -1,10 +1,11 @@
 package types
 
 import (
-	"github.com/prometheus/client_golang/prometheus"
 	"openPAQ/internal/algorithms"
 	"openPAQ/internal/normalization"
 	"strings"
+
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 var InputNormalizerErrorCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
@@ -99,6 +100,7 @@ type PairMatching struct {
 	StreetCityMatches       []CityStreetPostalCode
 	CityPostalCodeMatch     bool
 	CityPostalCodeMatches   []CityPostalCode
+	NominatimErrors         error
 }
 
 type CityPostalCode struct {

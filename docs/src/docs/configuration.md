@@ -68,6 +68,7 @@ An Overview for all available settings are listed in the table below.
 | CACHE_URL                | localhost:11211                            |          | URL to memcache                                                                                                         |
 | VERSION                  | 5.0.4                                      |    x     | The name of the version is included in the response, useful during development or to distinguish different environments |
 | LOG_LEVEL                | info                                       |    x     | Available log levels are: trace, debug, info, warning, error, fatal, panic                                              |
+| LOG_FORMAT               | text                                       |          | An alternative log format is "text". The default is a json logging format                                               |
 
 ## Configure Clickhouse
 If you want to use the list matching mechanism a clickhouse configuration is needed. Information on [Clickhouse](https://clickhouse.com/) and how to set up the database can be found on their website. 

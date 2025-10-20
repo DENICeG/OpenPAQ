@@ -16,6 +16,12 @@ With any major version update, breaking changes may occur that can affect the be
 
 ---
 
+## [5.0.14] - 2025-10-20
+### Fixed
+- Error handling: unreachable Nominatim no longer returns HTTP 200 with false result values
+
+---
+
 ## [5.0.13] - 2025-09-17
 ### Fixed
 - Significant reduction in queries to Nominatim

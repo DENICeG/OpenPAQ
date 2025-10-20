@@ -51,6 +51,12 @@ func (nom *Nominatim) Handle(ctx context.Context, input types.Input) <-chan type
 		rC := nom.CityStreetCheck(ctx, normalizedInput)
 		r := <-rC
 
+		if r.NominatimErrors != nil {
+			result.NominatimErrors = r.NominatimErrors
+			c <- result
+			return
+		}
+
 		result.StreetCityMatch = r.StreetCityMatch
 		result.StreetCityMatches = r.StreetCityMatches
 
@@ -61,10 +67,12 @@ func (nom *Nominatim) Handle(ctx context.Context, input types.Input) <-chan type
 			select {
 			case p := <-pC:
 				pC = nil
+				result.NominatimErrors = p.NominatimErrors
 				result.CityPostalCodeMatch = p.CityPostalCodeMatch
 				result.CityPostalCodeMatches = p.CityPostalCodeMatches
 			case q := <-qC:
 				qC = nil
+				result.NominatimErrors = q.NominatimErrors
 				result.PostalCodeStreetMatch = q.PostalCodeStreetMatch
 				result.PostalCodeStreetMatches = q.PostalCodeStreetMatches
 			case <-ctx.Done():

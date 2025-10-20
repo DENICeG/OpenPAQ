@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/hbollon/go-edlib"
-	log "github.com/sirupsen/logrus"
 	"openPAQ/internal"
 	"openPAQ/internal/algorithms"
 	diytypes "openPAQ/internal/listmatcher/types"
 	"openPAQ/internal/types"
 	"os"
 	"strings"
+
+	"github.com/hbollon/go-edlib"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -24,7 +25,12 @@ func init() {
 
 func setupLogger(logLevel log.Level) {
 	// Log as JSON instead of the default ASCII formatter.
-	log.SetFormatter(&log.JSONFormatter{})
+
+	if os.Getenv("LOG_FORMAT") == "text" {
+		log.SetFormatter(&log.TextFormatter{})
+	} else {
+		log.SetFormatter(&log.JSONFormatter{})
+	}
 
 	// Output to stdout instead of the default stderr
 	log.SetOutput(os.Stdout)
