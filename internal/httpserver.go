@@ -7,17 +7,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"openPAQ/internal/algorithms"
+	"openPAQ/internal/types"
+	"strings"
+	"time"
+
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
-	"net/http"
-	"openPAQ/internal/algorithms"
-	"openPAQ/internal/types"
-	"strings"
-	"time"
 )
 
 var (
@@ -187,6 +188,8 @@ func (s *Service) checkHandler(ctx *gin.Context) {
 
 	var source types.SourceOfTruth
 	var debugDude types.PairMatching
+	var NominatimError error
+
 	ctx2, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
 
@@ -217,6 +220,10 @@ func (s *Service) checkHandler(ctx *gin.Context) {
 					}
 				case r := <-pairMatchesNominatim:
 					pairMatchesNominatim = nil
+					if r.NominatimErrors != nil {
+						NominatimError = r.NominatimErrors
+						return
+					}
 					if res, ok := eval(r, input.CountryCode); ok {
 						debugDude = r
 						source = res
@@ -238,12 +245,29 @@ func (s *Service) checkHandler(ctx *gin.Context) {
 		}()
 	} else {
 		pairMatchesNominatim := <-s.nominatim.Handle(ctx2, input)
+		if pairMatchesNominatim.NominatimErrors != nil {
+			NominatimError = pairMatchesNominatim.NominatimErrors
+		}
 		source.StreetMatched = pairMatchesNominatim.StreetCityMatch || pairMatchesNominatim.PostalCodeStreetMatch
 		source.CityMatched = pairMatchesNominatim.CityPostalCodeMatch || pairMatchesNominatim.StreetCityMatch
 		source.PostalCodeMatched = pairMatchesNominatim.PostalCodeStreetMatch || pairMatchesNominatim.CityPostalCodeMatch
 		source.CityToPostalCodeMatched = pairMatchesNominatim.CityPostalCodeMatch
 		source.CountryCodeMatched = types.CountryCodeCheck(input.CountryCode, pairMatchesNominatim)
 		debugDude = pairMatchesNominatim
+	}
+
+	if NominatimError != nil {
+
+		msg := strings.Split(NominatimError.Error(), "\n")
+
+		log.WithFields(log.Fields{
+			"msg": msg,
+		}).Errorf("Request to Nominatim failed")
+
+		ctx.JSON(500, gin.H{
+			"NominatimError": msg,
+		})
+		return
 	}
 
 	var matcherConfig algorithms.MatchSeverityConfig

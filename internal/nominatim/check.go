@@ -2,6 +2,7 @@ package nominatim
 
 import (
 	"context"
+	"errors"
 	"maps"
 	"openPAQ/internal/algorithms"
 	"openPAQ/internal/types"
@@ -45,11 +46,12 @@ type nominatimRequestParameter struct {
 	postalCode  string
 }
 
-func (nom *Nominatim) request(ctx context.Context, reqParams nominatimRequestParameter) []ParsedResult {
+func (nom *Nominatim) request(ctx context.Context, reqParams nominatimRequestParameter) ([]ParsedResult, error) {
 	languages := getInputLanguages(nom.languages, reqParams.countryCode)
 
 	writeProtection := sync.Mutex{}
 	var parsedResults []ParsedResult
+	var nominatimError error
 
 	wg := sync.WaitGroup{}
 
@@ -68,6 +70,7 @@ func (nom *Nominatim) request(ctx context.Context, reqParams nominatimRequestPar
 			}, "", l)
 
 			if errSearchString != nil && errParameter != nil {
+				nominatimError = errors.Join(errSearchString, errParameter)
 				return
 			}
 
@@ -92,7 +95,7 @@ func (nom *Nominatim) request(ctx context.Context, reqParams nominatimRequestPar
 
 	wg.Wait()
 
-	return parsedResults
+	return parsedResults, nominatimError
 
 }
 
@@ -106,11 +109,18 @@ func (nom *Nominatim) CityStreetCheck(ctx context.Context, input types.Normalize
 
 		for _, street := range input.Streets {
 
-			nominatimResults := nom.request(ctx, nominatimRequestParameter{
+			nominatimResults, err := nom.request(ctx, nominatimRequestParameter{
 				city:        input.City,
 				street:      street,
 				countryCode: input.CountryCode,
 			})
+
+			if err != nil {
+				c <- types.PairMatching{
+					NominatimErrors: err,
+				}
+				return
+			}
 
 			nominatimResults = removeDuplicatesParsedResult(nominatimResults)
 
@@ -215,7 +225,13 @@ func (nom *Nominatim) PostalCodeStreetCheck(ctx context.Context, input types.Nor
 				}
 			}
 
-			nominatimResults := nom.request(ctx, req)
+			nominatimResults, err := nom.request(ctx, req)
+
+			if err != nil {
+				c <- types.PairMatching{
+					NominatimErrors: err,
+				}
+			}
 
 			nominatimResults = removeDuplicatesParsedResult(nominatimResults)
 
@@ -294,16 +310,28 @@ func (nom *Nominatim) PostalCodeCityCheck(ctx context.Context, input types.Norma
 
 		var matches []types.CityPostalCode
 
-		nominatimResults := nom.request(ctx, nominatimRequestParameter{
+		nominatimResults, err := nom.request(ctx, nominatimRequestParameter{
 			postalCode:  input.PostalCode,
 			countryCode: input.CountryCode,
 		})
 
-		moreNominatimResults := nom.request(ctx, nominatimRequestParameter{
+		if err != nil {
+			c <- types.PairMatching{
+				NominatimErrors: err,
+			}
+		}
+
+		moreNominatimResults, err := nom.request(ctx, nominatimRequestParameter{
 			postalCode:  input.PostalCode,
 			city:        input.City,
 			countryCode: input.CountryCode,
 		})
+
+		if err != nil {
+			c <- types.PairMatching{
+				NominatimErrors: err,
+			}
+		}
 
 		nominatimResults = append(nominatimResults, moreNominatimResults...)
 
