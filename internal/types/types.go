@@ -45,13 +45,13 @@ func (i Input) Normalize() NormalizeInput {
 	newCity, err := i.Normalizer.City(i.City)
 	res.City = strings.ToLower(newCity)
 	if err != nil || len(res.City) == 0 {
-		InputNormalizerErrorCounter.WithLabelValues("city", res.City).Inc()
+		InputNormalizerErrorCounter.WithLabelValues("city", res.CountryCode).Inc()
 	}
 
 	streetLower := strings.ToLower(i.Street)
 	res.Streets, err = i.Normalizer.Street(streetLower)
 	if err != nil || len(res.Streets) == 0 {
-		InputNormalizerErrorCounter.WithLabelValues("street", i.Street).Inc()
+		InputNormalizerErrorCounter.WithLabelValues("street", res.CountryCode).Inc()
 	}
 
 	return res
