@@ -88,6 +88,7 @@ func (nr *NominatimCoreResult) parse() ParsedResult {
 	}
 	if len(nr.IsolatedDwelling) > 0 {
 		p.City = append(p.City, nr.IsolatedDwelling)
+		p.Street = append(p.Street, nr.IsolatedDwelling)
 	}
 	if len(nr.Neighbourhood) > 0 {
 		p.City = append(p.City, nr.Neighbourhood)
