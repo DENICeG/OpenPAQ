@@ -92,6 +92,7 @@ func (at *AT) Street(s string) ([]string, error) {
 	s = strings.ReplaceAll(s, "strasze", "strasse")
 	s = strings.ReplaceAll(s, "chau.", "chaussee")
 	s = strings.ReplaceAll(s, "rd.", "road")
+	s = strings.ReplaceAll(s, "wr.", "wiener")
 	s = at.reCrap.ReplaceAllString(s, " ")
 	s = strings.ReplaceAll(s, "ü", "ue")
 	s = strings.ReplaceAll(s, "ä", "ae")
