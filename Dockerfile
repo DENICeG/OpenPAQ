@@ -1,21 +1,34 @@
-FROM golang:1.26.8-alpine as builder
+# syntax=docker/dockerfile:1
 
-RUN apk update && apk add --no-cache git ca-certificates
+FROM --platform=$BUILDPLATFORM golang:1.26.8-alpine AS builder
+
+RUN apk add --no-cache git ca-certificates
 
 WORKDIR /data
 
-RUN echo Building for linux
-RUN mkdir -p bin
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
-RUN go get -v -d ./...
-RUN CGO_ENABLED=0 GOOS=linux go build -tags timetzdata -o bin/cva -a ./cmd/main.go
+
+ARG TARGETOS
+ARG TARGETARCH
+
+RUN echo "Building for ${TARGETOS}/${TARGETARCH}" \
+    && mkdir -p bin \
+    && CGO_ENABLED=0 \
+       GOOS="${TARGETOS}" \
+       GOARCH="${TARGETARCH}" \
+       go build -tags timetzdata -o bin/cva ./cmd/main.go
 
 FROM scratch
 
 WORKDIR /data
-COPY --from=builder /data/bin/cva /data
+
+COPY --from=builder /data/bin/cva /data/cva
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /data/docs/openAPI /data/docs/docs/openAPI
-ENV TZ="Europe/Berlin"
-CMD [ "/data/cva" ]
 
+ENV TZ="Europe/Berlin"
+
+CMD ["/data/cva"]
