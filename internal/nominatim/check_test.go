@@ -83,6 +83,15 @@ var multiResultAlmostSimilarStreet = []nominatim.NominatimCoreResult{
 	},
 }
 
+// Nominatim returns streets without postcode when it cannot derive one from a postcode area
+var resultWithoutPostalCode = []nominatim.NominatimCoreResult{
+	{
+		Village:     "Deutsch-Paulsdorf",
+		Road:        "Am Spitzberg",
+		CountryCode: "de",
+	},
+}
+
 func comparePairmatching(first, second types.PairMatching) error {
 
 	if first.CityPostalCodeMatch != second.CityPostalCodeMatch {
@@ -376,6 +385,40 @@ func TestCityStreetCheck(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "response without postal code is kept",
+			nom: *nominatim.NewNominatim(
+				"",
+				[]string{"en", "de"},
+				config, normalization.NewNormalizer("generic"),
+				ApiMock{
+					searchStringResponse: resultWithoutPostalCode,
+					parameterResponse:    resultWithoutPostalCode,
+				},
+				"test",
+			),
+			input: types.NormalizeInput{
+				Streets:     []string{"am spitzberg"},
+				City:        "deutsch paulsdorf",
+				PostalCode:  "02829",
+				CountryCode: "de",
+			},
+			want: types.PairMatching{
+				StreetCityMatch: true,
+				StreetCityMatches: []types.CityStreetPostalCode{
+					{
+						City:                  "deutsch paulsdorf",
+						Street:                "am spitzberg",
+						PostalCode:            "",
+						CountryCode:           "de",
+						StreetSimilarity:      1,
+						WasPartialStreetMatch: false,
+						CitySimilarity:        1,
+						WasPartialCityMatch:   false,
+					},
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -515,6 +558,38 @@ func TestPostalCodeStreetCheck(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "matches without postal code are ignored",
+			nom: *nominatim.NewNominatim(
+				"",
+				[]string{"en", "de"},
+				config, normalization.NewNormalizer("generic"),
+				ApiMock{
+					searchStringResponse: resultWithoutPostalCode,
+					parameterResponse:    resultWithoutPostalCode,
+				},
+				"test",
+			),
+			input: types.NormalizeInput{
+				Streets:     []string{"am spitzberg"},
+				City:        "deutsch paulsdorf",
+				PostalCode:  "02829",
+				CountryCode: "de",
+			},
+			cityStreetMatches: []types.CityStreetPostalCode{
+				{
+					City:                  "deutsch paulsdorf",
+					Street:                "am spitzberg",
+					PostalCode:            "",
+					CountryCode:           "de",
+					StreetSimilarity:      1,
+					WasPartialStreetMatch: false,
+					CitySimilarity:        1,
+					WasPartialCityMatch:   false,
+				},
+			},
+			want: types.PairMatching{},
+		},
 	}
 
 	for _, tt := range tests {
@@ -610,6 +685,38 @@ func TestPostalCodeCityCheck(t *testing.T) {
 					},
 				},
 			},
+		},
+		{
+			name: "matches without postal code are ignored",
+			nom: *nominatim.NewNominatim(
+				"",
+				[]string{"en", "de"},
+				config, normalization.NewNormalizer("generic"),
+				ApiMock{
+					searchStringResponse: resultWithoutPostalCode,
+					parameterResponse:    resultWithoutPostalCode,
+				},
+				"test",
+			),
+			input: types.NormalizeInput{
+				Streets:     []string{"am spitzberg"},
+				City:        "deutsch paulsdorf",
+				PostalCode:  "02829",
+				CountryCode: "de",
+			},
+			cityStreetMatches: []types.CityStreetPostalCode{
+				{
+					City:                  "deutsch paulsdorf",
+					Street:                "am spitzberg",
+					PostalCode:            "",
+					CountryCode:           "de",
+					StreetSimilarity:      1,
+					WasPartialStreetMatch: false,
+					CitySimilarity:        1,
+					WasPartialCityMatch:   false,
+				},
+			},
+			want: types.PairMatching{},
 		},
 	}
 
