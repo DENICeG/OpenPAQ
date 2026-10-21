@@ -161,9 +161,16 @@ func (pr *ParsedResult) normalize(n normalization.Normalize) (ParsedResult, erro
 	ret := ParsedResult{}
 
 	var err error
-	ret.PostalCode, err = n.PostalCode(pr.PostalCode)
-	if err != nil {
-		return ret, err
+	// Skip postal-code normalization when the postcode is empty. Country
+	// normalizers (DE, AT, DK, ES, GB, IT, NL) reject an empty string, which
+	// would drop an otherwise valid result -- a street whose postcode could not
+	// be derived. The postcode checks already ignore empty postcodes, so only
+	// the street↔city match is affected.
+	if pr.PostalCode != "" {
+		ret.PostalCode, err = n.PostalCode(pr.PostalCode)
+		if err != nil {
+			return ret, err
+		}
 	}
 
 	for _, i := range pr.City {

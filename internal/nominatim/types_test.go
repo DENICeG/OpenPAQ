@@ -3,6 +3,8 @@ package nominatim
 import (
 	"reflect"
 	"testing"
+
+	"openPAQ/internal/normalization"
 )
 
 func TestNominatimCoreResult_parse(t *testing.T) {
@@ -114,5 +116,40 @@ func TestNominatimCoreResult_parse(t *testing.T) {
 				t.Errorf("parse() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestParsedResult_normalize_EmptyPostalCode(t *testing.T) {
+	deNormalizer, err := normalization.NewDE()
+	if err != nil {
+		t.Fatalf("NewDE() error = %v", err)
+	}
+
+	// A Nominatim result without a postcode (common for streets, e.g. when the
+	// surrounding postcode area could not be derived) must still normalize: an
+	// empty postcode is not an error, so the result is kept instead of being
+	// dropped and the street↔city match is preserved.
+	pr := ParsedResult{
+		Street:      []string{"am spitzberg"},
+		City:        []string{"deutsch-paulsdorf"},
+		PostalCode:  "",
+		CountryCode: "de",
+	}
+
+	got, err := pr.normalize(deNormalizer)
+	if err != nil {
+		t.Fatalf("normalize() with empty postcode returned error: %v", err)
+	}
+	if got.PostalCode != "" {
+		t.Errorf("normalize() PostalCode = %q, want empty", got.PostalCode)
+	}
+	if len(got.Street) == 0 {
+		t.Errorf("normalize() dropped the street, want it preserved")
+	}
+	if len(got.City) == 0 {
+		t.Errorf("normalize() dropped the city, want it preserved")
+	}
+	if got.CountryCode != "de" {
+		t.Errorf("normalize() CountryCode = %q, want %q", got.CountryCode, "de")
 	}
 }
