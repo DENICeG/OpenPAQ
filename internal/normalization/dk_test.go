@@ -16,7 +16,10 @@ func TestGetCountryCode(t *testing.T) {
 }
 
 func TestCity(t *testing.T) {
-	dkNormalizer, _ := newDK()
+	dkNormalizer, err := newDK()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	tests := []struct {
 		name   string
@@ -26,13 +29,50 @@ func TestCity(t *testing.T) {
 		{name: "Want only small letters", input: "ACityWithCapitalLetters", expect: "acitywithcapitalletters"},
 		{name: "oe should be replaced", input: "ACityWithOeWithin", expect: "acitywithøwithin"},
 		{name: "ae should be replaced", input: "ACityWithAeWithin", expect: "acitywithæwithin"},
-		{name: "sv should be removed at the end", input: "City SV", expect: "city"},
-		{name: "sø should be removed at the end", input: "City sø", expect: "city"},
-		{name: "nø should be removed at the end", input: "City nø", expect: "city"},
-		{name: "s should be removed at the end", input: "City S", expect: "city"},
-		{name: "N should be removed at the end", input: "City N", expect: "city"},
-		{name: "V should be removed at the end", input: "City V", expect: "city"},
-		{name: "ø should be removed at the end", input: "City ø", expect: "city"},
+		{name: "Copenhagen centre", input: "København K", expect: "københavn"},
+		{name: "Copenhagen west", input: "København V", expect: "københavn"},
+		{name: "Copenhagen north", input: "København N", expect: "københavn"},
+		{name: "Copenhagen east", input: "København Ø", expect: "københavn"},
+		{name: "Copenhagen south", input: "København S", expect: "københavn"},
+		{name: "Copenhagen northwest", input: "København NV", expect: "københavn"},
+		{name: "Copenhagen southwest", input: "København SV", expect: "københavn"},
+		{name: "Frederiksberg centre", input: "Frederiksberg C", expect: "frederiksberg"},
+		{name: "Aarhus centre", input: "Aarhus C", expect: "aarhus"},
+		{name: "Aarhus north", input: "Aarhus N", expect: "aarhus"},
+		{name: "Aarhus west", input: "Aarhus V", expect: "aarhus"},
+		{name: "Aalborg southeast", input: "Aalborg SØ", expect: "aalborg"},
+		{name: "Aalborg southwest", input: "Aalborg SV", expect: "aalborg"},
+		{name: "Aalborg east is written in full", input: "Aalborg Øst", expect: "aalborg"},
+		{name: "Odense northeast", input: "Odense NØ", expect: "odense"},
+		{name: "Odense M is a district of the same city", input: "Odense M", expect: "odense"},
+		{name: "Esbjerg east", input: "Esbjerg Ø", expect: "esbjerg"},
+		{name: "Randers northwest", input: "Randers NV", expect: "randers"},
+		{name: "ASCII spelling with district", input: "Koebenhavn K", expect: "københavn"},
+		{name: "simplified spelling with district", input: "Kobenhavn K", expect: "københavn"},
+		{name: "English spelling with district", input: "Copenhagen K", expect: "københavn"},
+		{name: "German spelling with district", input: "Kopenhagen K", expect: "københavn"},
+		{name: "abbreviated name with district", input: "Kbh. K", expect: "københavn"},
+		{name: "abbreviated name without district", input: "Kbh", expect: "københavn"},
+		{name: "historic spelling with district", input: "Århus C", expect: "aarhus"},
+		{name: "historic spelling without district", input: "Århus", expect: "aarhus"},
+		{name: "whitespace and trailing suffix period", input: " \tKØBENHAVN\u00a0  K.\n", expect: "københavn"},
+		{name: "unknown city keeps directional suffix", input: "City SV", expect: "city sv"},
+		{name: "unknown district is preserved", input: "København X", expect: "københavn x"},
+		{name: "district must belong to this city", input: "Aarhus K", expect: "aarhus k"},
+		{name: "district token must be complete", input: "København Nord", expect: "københavn nord"},
+		{name: "suffix must be last", input: "København K Extra", expect: "københavn k extra"},
+		{name: "attached suffix is preserved", input: "KøbenhavnK", expect: "københavnk"},
+		{name: "Falster must remain distinct", input: "Nykøbing F", expect: "nykøbing f"},
+		{name: "Mors must remain distinct", input: "Nykøbing M", expect: "nykøbing m"},
+		{name: "Sjaelland must remain distinct", input: "Nykøbing S", expect: "nykøbing s"},
+		{name: "Viby J suffix is preserved", input: "Viby J", expect: "viby j"},
+		{name: "word beginning with s is preserved", input: "Hvide Sande", expect: "hvide sande"},
+		{name: "word beginning with v is preserved", input: "Sønder Vissing", expect: "sønder vissing"},
+		{name: "word beginning with n is preserved", input: "Store Nørreby", expect: "store nørreby"},
+		{name: "multiword city whitespace", input: "  Nørre\tSnede  ", expect: "nørre snede"},
+		{name: "hyphenated name is preserved", input: "Nørre-Åby", expect: "nørre-åby"},
+		{name: "empty city", input: "", expect: ""},
+		{name: "whitespace only", input: " \t\n", expect: ""},
 		{name: "sv should not be removed at the beginning", input: "SV City", expect: "sv city"},
 		{name: "sv should not be removed at the beginning", input: "SVCity", expect: "svcity"},
 	}
