@@ -3,6 +3,7 @@ package normalization
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -11,9 +12,22 @@ type DK struct {
 	reBuildingAfterNumber *regexp.Regexp // can contain additional location info, such as "entrance", "building" etc.
 	reFloor               *regexp.Regexp
 	reDoor                *regexp.Regexp
-	reCityGeo             *regexp.Regexp // Bigger cities can be suffixed with a geographical location description, e.g. København NV (Copenhagen North West)
 	reCrap                *regexp.Regexp
 	rePostalCode          *regexp.Regexp
+}
+
+// Only these known postal districts may be reduced to their base city for
+// matching. Other suffixes can distinguish different towns (Nykøbing F/M/S,
+// for example) and must be preserved. This is not a postcode validation table.
+// District names: https://www.statistikbanken.dk/POSTNR1
+var dkCityDistrictSuffixes = map[string][]string{
+	"københavn":     {"k", "v", "n", "ø", "s", "nv", "sv"},
+	"frederiksberg": {"c"},
+	"aarhus":        {"c", "n", "v"},
+	"aalborg":       {"sv", "sø", "øst"},
+	"odense":        {"c", "m", "n", "nv", "nø", "s", "sv", "sø", "v"},
+	"esbjerg":       {"n", "v", "ø"},
+	"randers":       {"c", "nv", "nø", "sv", "sø"},
 }
 
 func newDK() (*DK, error) {
@@ -36,11 +50,6 @@ func newDK() (*DK, error) {
 		return nil, errDoor
 	}
 
-	reCityGeo, errGeo := regexp.Compile("\\W(sv|nv|sø|nø|s|n|v|ø)")
-	if errGeo != nil {
-		return nil, errGeo
-	}
-
 	rePostalCode, errPostalCode := regexp.Compile("[+/(){}\\[\\]<>!§$%&=?*#€¿_\",:;a-zA-Z- ]")
 	if errPostalCode != nil {
 		return nil, errPostalCode
@@ -56,7 +65,6 @@ func newDK() (*DK, error) {
 		reBuildingAfterNumber: reBuilding,
 		reFloor:               reFloor,
 		reDoor:                reDoor,
-		reCityGeo:             reCityGeo,
 		rePostalCode:          rePostalCode,
 		reCrap:                reCrap,
 	}, nil
@@ -71,11 +79,29 @@ func (dk *DK) City(s string) (string, error) {
 
 	s = strings.ReplaceAll(s, "oe", "ø")
 	s = strings.ReplaceAll(s, "ae", "æ")
-	s = dk.reCityGeo.ReplaceAllString(s, "")
+	s = strings.Join(strings.Fields(s), " ")
 
-	s = strings.TrimSpace(s)
+	// City returns the comparison name; the original city remains in types.Input.
+	// Match a whole trailing token so names such as Hvide Sande are not damaged.
+	if i := strings.LastIndexByte(s, ' '); i >= 0 {
+		base := normalizeDKCityName(s[:i])
+		suffix := strings.TrimSuffix(s[i+1:], ".")
+		if slices.Contains(dkCityDistrictSuffixes[base], suffix) {
+			return base, nil
+		}
+	}
 
-	return s, nil
+	return normalizeDKCityName(s), nil
+}
+
+func normalizeDKCityName(s string) string {
+	switch s {
+	case "kbh", "kbh.", "kobenhavn", "copenhagen", "kopenhagen":
+		return "københavn"
+	case "århus":
+		return "aarhus"
+	}
+	return s
 }
 
 func (dk *DK) PostalCode(s string) (string, error) {

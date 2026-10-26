@@ -15,8 +15,16 @@ With any major version update, breaking changes may occur that can affect the be
 <br><br>
 ---
 
-## [5.2.4] - 2026-10-01
+## [5.2.5] - 2026-10-26
 ### Changed
+- Handling for Danish cities adjusted for direction and district behavior
+### Security
+- Dependencies update
+- 
+---
+
+## [5.2.4] - 2026-10-01
+### Added
 - Added Build for arm64 docker (MACOS support)
 
 ---
@@ -24,19 +32,19 @@ With any major version update, breaking changes may occur that can affect the be
 ## [5.2.3] - 2026-09-14
 ### Fixed
 - Fixed Typo in Nominatim Part of documentation
-### Changed
+### Security
 - Dependencies update
 
 ---
 
 ## [5.2.2] - 2026-07-14
-### Changed
+### Security
 - Dependencies update
 
 ---
 
 ## [5.2.1] - 2026-07-14
-### Changed
+### Security
 - Dependencies update
 
 ---
@@ -83,7 +91,7 @@ With any major version update, breaking changes may occur that can affect the be
 ---
 
 ## [5.0.10] - 2025-08-12
-### Changed
+### Security
 - Dependencies update
 
 ---
