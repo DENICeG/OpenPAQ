@@ -1,6 +1,7 @@
 package nominatim
 
 import (
+	"openPAQ/internal/normalization"
 	"reflect"
 	"testing"
 )
@@ -112,6 +113,72 @@ func TestNominatimCoreResult_parse(t *testing.T) {
 			}
 			if got := nr.parse(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("parse() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestParsedResult_normalize(t *testing.T) {
+	de, err := normalization.NewDE()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name    string
+		input   ParsedResult
+		want    ParsedResult
+		wantErr bool
+	}{
+		{
+			name: "valid postal code",
+			input: ParsedResult{
+				Street:      []string{"am spitzberg"},
+				PostalCode:  "02829",
+				City:        []string{"deutsch-paulsdorf"},
+				CountryCode: "de",
+			},
+			want: ParsedResult{
+				Street:      []string{"am spitzberg"},
+				PostalCode:  "02829",
+				City:        []string{"deutsch paulsdorf"},
+				CountryCode: "de",
+			},
+		},
+		{
+			name: "missing postal code is kept",
+			input: ParsedResult{
+				Street:      []string{"am spitzberg"},
+				PostalCode:  "",
+				City:        []string{"deutsch-paulsdorf"},
+				CountryCode: "de",
+			},
+			want: ParsedResult{
+				Street:      []string{"am spitzberg"},
+				PostalCode:  "",
+				City:        []string{"deutsch paulsdorf"},
+				CountryCode: "de",
+			},
+		},
+		{
+			name: "invalid postal code",
+			input: ParsedResult{
+				Street:      []string{"am spitzberg"},
+				PostalCode:  "123",
+				City:        []string{"deutsch-paulsdorf"},
+				CountryCode: "de",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.input.normalize(de)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("normalize() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if !tt.wantErr && !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("normalize() = %v, want %v", got, tt.want)
 			}
 		})
 	}

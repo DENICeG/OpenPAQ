@@ -161,9 +161,12 @@ func (pr *ParsedResult) normalize(n normalization.Normalize) (ParsedResult, erro
 	ret := ParsedResult{}
 
 	var err error
-	ret.PostalCode, err = n.PostalCode(pr.PostalCode)
-	if err != nil {
-		return ret, err
+	// a missing postal code is not an invalid one: keep the result for the street/city check
+	if pr.PostalCode != "" {
+		ret.PostalCode, err = n.PostalCode(pr.PostalCode)
+		if err != nil {
+			return ret, err
+		}
 	}
 
 	for _, i := range pr.City {
