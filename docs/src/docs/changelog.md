@@ -14,13 +14,21 @@ Important:
 With any major version update, breaking changes may occur that can affect the behavior, structure, or integration of OpenPAQ in your environment. It is strongly recommended to review the changelog and migration guide before upgrading to a new major version to ensure compatibility with your existing implementation.
 <br><br>
 ---
+## [5.2.6] - 2026-11-16
+### Added
+- Security.md
+- File Headers
+### Security
+- Dependencies update
+
+---
 
 ## [5.2.5] - 2026-10-26
 ### Changed
 - Handling for Danish cities adjusted for direction and district behavior
 ### Security
 - Dependencies update
-- 
+
 ---
 
 ## [5.2.4] - 2026-10-01
