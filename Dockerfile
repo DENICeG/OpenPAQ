@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: 2025 DENIC eG and OpenPAQ contributors
 # SPDX-License-Identifier: AGPL-3.0-only
 
-FROM --platform=$BUILDPLATFORM golang:1.27.3-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.27.4-alpine AS builder
 
 RUN apk add --no-cache git ca-certificates
 

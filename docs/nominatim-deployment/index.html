@@ -1,0 +1,2132 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../open_api/">
+      
+      
+        <link rel="next" href="../development/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>Nominatim Server - OpenPAQ</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="../assets/external/fonts.googleapis.com/css.936b8ee8.css">
+        <style>:root{--md-text-font:"Roboto Condensed";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#deploy-nominatim" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="OpenPAQ" class="md-header__button md-logo" aria-label="OpenPAQ" data-md-component="logo">
+      
+  <img src="../img/openpaq.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenPAQ
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Nominatim Server
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DENICeG/OpenPAQ" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="OpenPAQ" class="md-nav__button md-logo" aria-label="OpenPAQ" data-md-component="logo">
+      
+  <img src="../img/openpaq.svg" alt="logo">
+
+    </a>
+    OpenPAQ
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DENICeG/OpenPAQ" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../open_api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenAPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nominatim Server
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nominatim Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hardware Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#by-region" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        By Region
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CPU
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disk
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-size-by-import-style-planet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Size by Import Style (Planet)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-nominatim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Nominatim
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Nominatim">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-country-eg-germany" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single Country (e.g. Germany)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#europe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Europe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-planet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Planet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Compose
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Docker Compose">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-germany" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Germany
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-europe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Europe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-full-planet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Full Planet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Environment Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#import-styles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import Styles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-a-local-pbf-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using a Local PBF File
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keeping-data-up-to-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keeping Data Up to Date
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keeping Data Up to Date">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trigger-updates-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trigger Updates Manually
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-update-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Update Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connecting-openpaq-to-self-hosted-nominatim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connecting OpenPAQ to Self-Hosted Nominatim
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Endpoints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#search-address-coordinates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Search (Address → Coordinates)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reverse-geocoding-coordinates-address" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverse Geocoding (Coordinates → Address)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lookup-osm-id-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup (OSM ID → Details)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-database-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Database Size
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View Logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-the-data-volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backup the Data Volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-country-eg-germany_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single Country (e.g. Germany)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#europe_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Europe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-planet_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Planet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geofabrik-data-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geofabrik Data Sources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License & EOL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.denic.de/ueber-denic/impressum" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Imprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hardware Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#by-region" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        By Region
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CPU
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disk
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-size-by-import-style-planet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Size by Import Style (Planet)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-nominatim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Nominatim
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Nominatim">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-country-eg-germany" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single Country (e.g. Germany)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#europe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Europe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-planet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Planet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Compose
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Docker Compose">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-germany" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Germany
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-europe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Europe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-full-planet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Full Planet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Environment Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#import-styles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import Styles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-a-local-pbf-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using a Local PBF File
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keeping-data-up-to-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keeping Data Up to Date
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keeping Data Up to Date">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trigger-updates-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trigger Updates Manually
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-update-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Update Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connecting-openpaq-to-self-hosted-nominatim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connecting OpenPAQ to Self-Hosted Nominatim
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Endpoints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#search-address-coordinates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Search (Address → Coordinates)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reverse-geocoding-coordinates-address" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverse Geocoding (Coordinates → Address)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lookup-osm-id-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup (OSM ID → Details)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-database-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Database Size
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View Logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-the-data-volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backup the Data Volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-country-eg-germany_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single Country (e.g. Germany)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#europe_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Europe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-planet_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Planet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geofabrik-data-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geofabrik Data Sources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="deploy-nominatim">Deploy Nominatim</h1>
+<p>OpenPAQ uses <a href="https://github.com/osm-search/Nominatim">Nominatim</a> as its backend for geocoding lookups.
+While the public instance at <code>nominatim.openstreetmap.org</code> works for testing, its
+<a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> limits automated and
+high-volume requests. For production use, a self-hosted Nominatim instance is recommended.</p>
+<p>OpenPAQ is battle-tested with the <a href="https://github.com/mediagis/nominatim-docker">mediagis/nominatim</a>
+Docker image, which bundles PostgreSQL, PostGIS and the Nominatim application into a single container.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><a href="https://www.docker.com/">Docker</a> (&gt;= 20.10)</li>
+<li>Docker Compose (optional, recommended for production)</li>
+<li>Sufficient RAM and SSD storage (see <a href="#hardware-requirements">Hardware Requirements</a>)</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<p>Pull the image and start Nominatim with a small dataset to verify everything works:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">PBF_URL</span><span class="o">=</span>https://download.geofabrik.de/europe/monaco-latest.osm.pbf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mediagis/nominatim:5.1
+</code></pre></div>
+<p>After the import completes, test the API:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8080/search?q=avenue+pasteur&amp;format=jsonv2"</span>
+</code></pre></div>
+<h2 id="hardware-requirements">Hardware Requirements</h2>
+<p>Requirements vary significantly depending on the geographic extent of the imported data.</p>
+<h3 id="by-region">By Region</h3>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>RAM (Import)</th>
+<th>RAM (Runtime)</th>
+<th>Disk (SSD)</th>
+<th>Import Duration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>City / State</td>
+<td>4–8 GB</td>
+<td>2–4 GB</td>
+<td>30–50 GB</td>
+<td>30 min – 2 h</td>
+</tr>
+<tr>
+<td>Germany</td>
+<td>12–16 GB</td>
+<td>8–10 GB</td>
+<td>~100 GB</td>
+<td>8–12 h</td>
+</tr>
+<tr>
+<td>Europe</td>
+<td>32–64 GB</td>
+<td>16–32 GB</td>
+<td>400–500 GB</td>
+<td>1–3 days</td>
+</tr>
+<tr>
+<td>Full Planet</td>
+<td>128 GB+</td>
+<td>64 GB+</td>
+<td>1 TB+</td>
+<td>2–5 days</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For a full planet import, the Nominatim project strongly recommends <strong>128 GB RAM or more</strong>.
+Out-of-memory issues with less than 64 GB RAM are not considered bugs.
+NVMe SSDs significantly reduce import times compared to SATA SSDs.</p>
+</div>
+<h3 id="cpu">CPU</h3>
+<ul>
+<li><strong>Import</strong>: as many cores as available (8–16 recommended for a planet import)</li>
+<li><strong>Runtime</strong>: 4+ cores for moderate query load</li>
+</ul>
+<h3 id="disk">Disk</h3>
+<ul>
+<li><strong>SSD is mandatory</strong> — HDDs are not suitable for Nominatim</li>
+<li>NVMe SSDs are strongly recommended for planet imports</li>
+<li>The import process requires significantly more disk space than the final database</li>
+</ul>
+<h3 id="database-size-by-import-style-planet">Database Size by Import Style (Planet)</h3>
+<table>
+<thead>
+<tr>
+<th>Style</th>
+<th>Import Time</th>
+<th>DB Size</th>
+<th>After <code>freeze</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>admin</td>
+<td>~4 h</td>
+<td>~215 GB</td>
+<td>~20 GB</td>
+</tr>
+<tr>
+<td>street</td>
+<td>~22 h</td>
+<td>~440 GB</td>
+<td>~185 GB</td>
+</tr>
+<tr>
+<td>address</td>
+<td>~36 h</td>
+<td>~545 GB</td>
+<td>~260 GB</td>
+</tr>
+<tr>
+<td>full</td>
+<td>~54 h</td>
+<td>~640 GB</td>
+<td>~330 GB</td>
+</tr>
+<tr>
+<td>extratags</td>
+<td>~54 h</td>
+<td>~650 GB</td>
+<td>~340 GB</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>These values grow over time as OpenStreetMap data increases. Treat them as rough estimates.</p>
+</div>
+<h2 id="running-nominatim">Running Nominatim</h2>
+<h3 id="single-country-eg-germany">Single Country (e.g. Germany)</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">PBF_URL</span><span class="o">=</span>https://download.geofabrik.de/europe/germany-latest.osm.pbf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">REPLICATION_URL</span><span class="o">=</span>https://download.geofabrik.de/europe/germany-updates/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">IMPORT_STYLE</span><span class="o">=</span>address<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-data:/var/lib/postgresql/14/main<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shm-size<span class="o">=</span>1g<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mediagis/nominatim:5.1
+</code></pre></div>
+<h3 id="europe">Europe</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">PBF_URL</span><span class="o">=</span>https://download.geofabrik.de/europe-latest.osm.pbf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">REPLICATION_URL</span><span class="o">=</span>https://download.geofabrik.de/europe-updates/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">IMPORT_STYLE</span><span class="o">=</span>address<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">THREADS</span><span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-data:/var/lib/postgresql/14/main<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-flatnode:/nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shm-size<span class="o">=</span>4g<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mediagis/nominatim:5.1
+</code></pre></div>
+<h3 id="full-planet">Full Planet</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">PBF_URL</span><span class="o">=</span>https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">REPLICATION_URL</span><span class="o">=</span>https://planet.openstreetmap.org/replication/day<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">IMPORT_STYLE</span><span class="o">=</span>full<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">THREADS</span><span class="o">=</span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-data:/var/lib/postgresql/14/main<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-flatnode:/nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shm-size<span class="o">=</span>8g<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mediagis/nominatim:5.1
+</code></pre></div>
+<h2 id="docker-compose">Docker Compose</h2>
+<p>For production use, a <code>docker-compose.yml</code> is recommended.</p>
+<h3 id="example-germany">Example: Germany</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mediagis/nominatim:5.1</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8080:8080"</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PBF_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://download.geofabrik.de/europe/germany-latest.osm.pbf</span>
+<span class="w">      </span><span class="nt">REPLICATION_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://download.geofabrik.de/europe/germany-updates/</span>
+<span class="w">      </span><span class="nt">IMPORT_STYLE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">address</span>
+<span class="w">      </span><span class="nt">THREADS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim-data:/var/lib/postgresql/14/main</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim-flatnode:/nominatim</span>
+<span class="w">    </span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1g</span>
+
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim-data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim-flatnode</span><span class="p">:</span>
+</code></pre></div>
+<h3 id="example-europe">Example: Europe</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mediagis/nominatim:5.1</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8080:8080"</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PBF_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://download.geofabrik.de/europe-latest.osm.pbf</span>
+<span class="w">      </span><span class="nt">REPLICATION_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://download.geofabrik.de/europe-updates/</span>
+<span class="w">      </span><span class="nt">IMPORT_STYLE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">address</span>
+<span class="w">      </span><span class="nt">THREADS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim-data:/var/lib/postgresql/14/main</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim-flatnode:/nominatim</span>
+<span class="w">    </span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4g</span>
+
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim-data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim-flatnode</span><span class="p">:</span>
+</code></pre></div>
+<h3 id="example-full-planet">Example: Full Planet</h3>
+<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mediagis/nominatim:5.1</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8080:8080"</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PBF_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf</span>
+<span class="w">      </span><span class="nt">REPLICATION_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://planet.openstreetmap.org/replication/day</span>
+<span class="w">      </span><span class="nt">IMPORT_STYLE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">full</span>
+<span class="w">      </span><span class="nt">THREADS</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim-data:/var/lib/postgresql/14/main</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nominatim-flatnode:/nominatim</span>
+<span class="w">    </span><span class="nt">shm_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8g</span>
+
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim-data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">nominatim-flatnode</span><span class="p">:</span>
+</code></pre></div>
+<p>Start with:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div>
+<h2 id="environment-variables">Environment Variables</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PBF_URL</code></td>
+<td>URL of the OSM data file to download and import</td>
+<td><code>https://download.geofabrik.de/europe/germany-latest.osm.pbf</code></td>
+</tr>
+<tr>
+<td><code>PBF_PATH</code></td>
+<td>Local path to an already downloaded PBF file (instead of URL)</td>
+<td><code>/data/germany.osm.pbf</code></td>
+</tr>
+<tr>
+<td><code>REPLICATION_URL</code></td>
+<td>URL for ongoing data updates</td>
+<td><code>https://download.geofabrik.de/europe/germany-updates/</code></td>
+</tr>
+<tr>
+<td><code>IMPORT_STYLE</code></td>
+<td>Scope of imported data</td>
+<td><code>admin</code>, <code>street</code>, <code>address</code>, <code>full</code>, <code>extratags</code></td>
+</tr>
+<tr>
+<td><code>THREADS</code></td>
+<td>Number of threads for the import process</td>
+<td><code>4</code>, <code>8</code>, <code>16</code></td>
+</tr>
+<tr>
+<td><code>NOMINATIM_PASSWORD</code></td>
+<td>PostgreSQL password for the Nominatim user</td>
+<td><code>mysecretpassword</code></td>
+</tr>
+<tr>
+<td><code>REVERSE_ONLY</code></td>
+<td>Only enable reverse geocoding (saves ~5% disk space)</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>IMPORT_WIKIPEDIA</code></td>
+<td>Import Wikipedia data for improved result ranking</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>FREEZE</code></td>
+<td>Remove update structures after import (saves significant space)</td>
+<td><code>true</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="import-styles">Import Styles</h3>
+<table>
+<thead>
+<tr>
+<th>Style</th>
+<th>Includes</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>admin</code></td>
+<td>Administrative boundaries only</td>
+<td>Coarse assignment (country, state, city)</td>
+</tr>
+<tr>
+<td><code>street</code></td>
+<td>+ streets</td>
+<td>Street-level geocoding</td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td>+ house numbers, postal codes</td>
+<td>Full address geocoding (<strong>recommended</strong>)</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>+ POIs (restaurants, shops, etc.)</td>
+<td>Search for places and amenities</td>
+</tr>
+<tr>
+<td><code>extratags</code></td>
+<td>+ additional OSM tags</td>
+<td>Maximum data coverage</td>
+</tr>
+</tbody>
+</table>
+<h2 id="using-a-local-pbf-file">Using a Local PBF File</h2>
+<p>If you have already downloaded the PBF file (e.g. for large imports with slow connections):</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">PBF_PATH</span><span class="o">=</span>/data/europe-latest.osm.pbf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">REPLICATION_URL</span><span class="o">=</span>https://download.geofabrik.de/europe-updates/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">IMPORT_STYLE</span><span class="o">=</span>address<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>/path/to/your/file:/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-data:/var/lib/postgresql/14/main<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-flatnode:/nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shm-size<span class="o">=</span>4g<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>mediagis/nominatim:5.1
+</code></pre></div>
+<h2 id="keeping-data-up-to-date">Keeping Data Up to Date</h2>
+<p>When <code>REPLICATION_URL</code> is set and <code>FREEZE</code> is <strong>not</strong> set to <code>true</code>, the container automatically fetches updates.</p>
+<h3 id="trigger-updates-manually">Trigger Updates Manually</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>nominatim<span class="w"> </span>nominatim<span class="w"> </span>replication<span class="w"> </span>--once
+</code></pre></div>
+<h3 id="check-update-status">Check Update Status</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>nominatim<span class="w"> </span>nominatim<span class="w"> </span>replication<span class="w"> </span>--check-for-updates
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Freeze an already running instance</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>nominatim<span class="w"> </span>nominatim<span class="w"> </span>freeze
+</code></pre></div>
+<h2 id="connecting-openpaq-to-self-hosted-nominatim">Connecting OpenPAQ to Self-Hosted Nominatim</h2>
+<p>Point the <code>NOMINATIM_ADDRESS</code> environment variable to your local instance:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">CACHE_ENABLED</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">VERSION</span><span class="o">=</span>testing<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">CLICKHOUSE_ENABLED</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">USE_TLS</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">USE_JWT</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">NOMINATIM_ADDRESS</span><span class="o">=</span>http://localhost:8080/search<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">LOG_LEVEL</span><span class="o">=</span>debug<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">WEBSERVER_LISTEN_ADDRESS</span><span class="o">=</span>:8001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span><span class="m">8001</span>:8001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/deniceg/openpaq:latest
+</code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>macOS and Windows Docker environments are virtualized, so the hostname <code>localhost</code> does not
+work as expected. You may need to use the host IP or <code>host.docker.internal</code> instead.</p>
+</div>
+<h2 id="api-endpoints">API Endpoints</h2>
+<p>After the import completes, the Nominatim API is available at <code>http://localhost:8080</code>.</p>
+<h3 id="search-address-coordinates">Search (Address → Coordinates)</h3>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8080/search?q=Brandenburger+Tor,+Berlin&amp;format=jsonv2"</span>
+</code></pre></div>
+<h3 id="reverse-geocoding-coordinates-address">Reverse Geocoding (Coordinates → Address)</h3>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8080/reverse?lat=52.5163&amp;lon=13.3777&amp;format=jsonv2"</span>
+</code></pre></div>
+<h3 id="lookup-osm-id-details">Lookup (OSM ID → Details)</h3>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8080/lookup?osm_ids=R146656,W104393803&amp;format=jsonv2"</span>
+</code></pre></div>
+<h3 id="status">Status</h3>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8080/status"</span>
+</code></pre></div>
+<h2 id="monitoring">Monitoring</h2>
+<h3 id="check-database-size">Check Database Size</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sudo<span class="w"> </span>-u<span class="w"> </span>postgres<span class="w"> </span>psql<span class="w"> </span>-d<span class="w"> </span>nominatim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-c<span class="w"> </span><span class="s2">"SELECT pg_size_pretty(pg_database_size('nominatim'));"</span>
+</code></pre></div>
+<h3 id="view-logs">View Logs</h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>nominatim
+</code></pre></div>
+<h3 id="backup-the-data-volume">Backup the Data Volume</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create backup</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-data:/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/backup<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ubuntu<span class="w"> </span>tar<span class="w"> </span>czf<span class="w"> </span>/backup/nominatim-backup.tar.gz<span class="w"> </span>/data
+
+<span class="c1"># Restore backup</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span>nominatim-data:/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/backup<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ubuntu<span class="w"> </span>tar<span class="w"> </span>xzf<span class="w"> </span>/backup/nominatim-backup.tar.gz<span class="w"> </span>-C<span class="w"> </span>/
+</code></pre></div>
+<h2 id="deployment-scenarios">Deployment Scenarios</h2>
+<h3 id="single-country-eg-germany_1">Single Country (e.g. Germany)</h3>
+<ul>
+<li><strong>Server</strong>: 16 GB RAM, 4 cores, 200 GB SSD</li>
+<li><strong>Import</strong>: ~10 hours</li>
+<li><strong>Database size</strong>: ~100 GB</li>
+</ul>
+<h3 id="europe_1">Europe</h3>
+<ul>
+<li><strong>Server</strong>: 64 GB RAM, 8+ cores, 500 GB NVMe SSD</li>
+<li><strong>Import</strong>: 1–3 days</li>
+<li><strong>Database size</strong>: ~250–350 GB</li>
+</ul>
+<h3 id="full-planet_1">Full Planet</h3>
+<ul>
+<li><strong>Server</strong>: 128 GB+ RAM, 16 cores, 1.5 TB+ NVMe SSD</li>
+<li><strong>Import</strong>: 2–5 days (NVMe ~2 days, SATA SSD 4–5 days)</li>
+<li><strong>Database size</strong>: ~640 GB (full style)</li>
+</ul>
+<h2 id="geofabrik-data-sources">Geofabrik Data Sources</h2>
+<p>Commonly used extracts from <a href="https://download.geofabrik.de">download.geofabrik.de</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>PBF URL</th>
+<th>Updates URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Monaco (test)</td>
+<td><code>https://download.geofabrik.de/europe/monaco-latest.osm.pbf</code></td>
+<td><code>https://download.geofabrik.de/europe/monaco-updates/</code></td>
+</tr>
+<tr>
+<td>Germany</td>
+<td><code>https://download.geofabrik.de/europe/germany-latest.osm.pbf</code></td>
+<td><code>https://download.geofabrik.de/europe/germany-updates/</code></td>
+</tr>
+<tr>
+<td>Austria</td>
+<td><code>https://download.geofabrik.de/europe/austria-latest.osm.pbf</code></td>
+<td><code>https://download.geofabrik.de/europe/austria-updates/</code></td>
+</tr>
+<tr>
+<td>Switzerland</td>
+<td><code>https://download.geofabrik.de/europe/switzerland-latest.osm.pbf</code></td>
+<td><code>https://download.geofabrik.de/europe/switzerland-updates/</code></td>
+</tr>
+<tr>
+<td>Europe</td>
+<td><code>https://download.geofabrik.de/europe-latest.osm.pbf</code></td>
+<td><code>https://download.geofabrik.de/europe-updates/</code></td>
+</tr>
+<tr>
+<td>North America</td>
+<td><code>https://download.geofabrik.de/north-america-latest.osm.pbf</code></td>
+<td><code>https://download.geofabrik.de/north-america-updates/</code></td>
+</tr>
+<tr>
+<td>Full Planet</td>
+<td><code>https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf</code></td>
+<td><code>https://planet.openstreetmap.org/replication/day</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://github.com/mediagis/nominatim-docker">mediagis/nominatim-docker (GitHub)</a></li>
+<li><a href="https://hub.docker.com/r/mediagis/nominatim">mediagis/nominatim (Docker Hub)</a></li>
+<li><a href="https://nominatim.org/release-docs/latest/">Nominatim Documentation</a></li>
+<li><a href="https://nominatim.org/release-docs/latest/admin/Installation/#hardware">Nominatim Hardware Requirements</a></li>
+<li><a href="https://download.geofabrik.de">OSM Data Extracts (Geofabrik)</a></li>
+<li><a href="https://wiki.openstreetmap.org/wiki/Planet.osm#Planet.osm_mirrors">Planet Mirrors</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../open_api/" class="md-footer__link md-footer__link--prev" aria-label="Previous: OpenAPI">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                OpenAPI
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../development/" class="md-footer__link md-footer__link--next" aria-label="Next: Development">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Development
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Powered by <a href="https://www.denic.de"> DENIC</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://www.denic.de" target="_blank" rel="noopener" title="DENIC eG" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.tabs.link", "content.code.annotate", "navigation.footer"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../assets/external/unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
