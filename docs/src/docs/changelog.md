@@ -14,6 +14,15 @@ Important:
 With any major version update, breaking changes may occur that can affect the behavior, structure, or integration of OpenPAQ in your environment. It is strongly recommended to review the changelog and migration guide before upgrading to a new major version to ensure compatibility with your existing implementation.
 <br><br>
 ---
+## [5.2.7] - 2026-11-24
+### Added
+- Documentation for self-hosted Nominatim server
+### Changed
+- Empty Postal Codes are now returned for matching ([Issue 6](https://github.com/DENICeG/OpenPAQ/issues/6))
+### Security
+- Dependencies update
+
+---
 ## [5.2.6] - 2026-11-16
 ### Added
 - Security.md

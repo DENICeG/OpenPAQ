@@ -8,6 +8,7 @@ nav:
   - Configuration: configuration.md
   - Usage: usage.md
   - OpenAPI: open_api.md
+  - Nominatim Server: nominatim-deployment.md
   - Development: development.md
   - Contribution: contributions.md
   - Changelog: changelog.md
